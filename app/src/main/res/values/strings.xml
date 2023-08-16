@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">FirebaseAuthVM</string>
+    <string name="action_login">Login or Register</string>
+    <string name="action_logout">Logout</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="signin_fragment_label">Login/Register</string>
+    <string name="loginstatus_fragment_label">Login Status</string>
+
+    <string name="welcome">Aktueller Login-Status</string>
+
+    <string name="loggedout">Ausgeloggt</string>
+    <string name="loggedin">Eingeloggt \n %s</string>
+    <string name="loggederror">Login-Fehler \n %s</string>
+    <string name="processing">Anmeldung läuft ...</string>
+    <string name="pwresetting">PW zurücksetzen.\nPrüfen Sie Ihre E-Mails.</string>
+
+    <string name="buttonLogin">Login</string>
+    <string name="buttonRegister">Neuer Account</string>
+
+    <string name="emailHint">E-Mail Adresse</string>
+    <string name="pwHint">Passwort</string>
+    <string name="pwReset">Passwort vergessen?</string>
+
+    <string name="forgotPw_title">Passwort zurücksetzen</string>
+    <string name="forgotPw_msg">Geben Sie Ihre E-Mail Adresse an.</string>
+
+
+
+    <string name="required">Bitte einen gültigen Eintrag vornehmen!</string>
+
+
+</resources>

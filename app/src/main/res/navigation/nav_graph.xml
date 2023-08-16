@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginStatusFragment">
+    <fragment
+        android:id="@+id/loginStatusFragment"
+        android:name="com.example.firebaseauthvm.LoginStatusFragment"
+        android:label="@string/loginstatus_fragment_label"
+        tools:layout="@layout/fragment_loginstatus" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.example.firebaseauthvm.SignInFragment"
+        android:label="@string/signin_fragment_label"
+        tools:layout="@layout/fragment_signin" />
+</navigation>
