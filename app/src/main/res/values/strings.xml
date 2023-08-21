@@ -1,15 +1,39 @@
 <resources>
     <string name="app_name">FirebaseAuthVM</string>
-    <string name="action_login">Login or Register</string>
-    <string name="action_logout">Logout</string>
+    <string name="action_nickname">Nickname setzen oder ändern</string>
+
     <!-- Strings used for fragments for navigation -->
-    <string name="signin_fragment_label">Login/Register</string>
-    <string name="loginstatus_fragment_label">Login Status</string>
+    <string name="signin_fragment_label">Anmeldung</string>
+
+
+    <string name="status_text">Status</string>
+    <string name="login_text">Login</string>
+    <string name="logout_text">Logout</string>
+    <string name="no_account_text">Noch keinen Account?</string>
+    <string name="sign_up_text">Sign Up</string>
+    <string name="forgot_password_text">Passwort vergessen?</string>
+    <string name="reset_password_text">Passwort zurücksetzen</string>
+
+    <string name="emailHint">E-Mail Adresse</string>
+    <string name="pwHint">Passwort</string>
+    <string name="pwReset">Passwort vergessen?</string>
+    <string name="nicknameHint">Nickname</string>
+
+    <string name="signUpTitle">Neuen Account anlegen</string>
+    <string name="signUpMessage">Legen Sie E-Mail und Passwort für Ihren neuen Account fest.</string>
+    <string name="signInTitle">Einloggen</string>
+    <string name="signInMessage">Geben Sie E-Mail und Passwort an, um sich einzuloggen.</string>
+
+    <string name="noValidInput">Bitte prüfen Sie Ihre Eingaben!</string>
+    <string name="error">Ein unspezifizierter Fehler beim Login ist aufgetreten.</string>
+
+
+
 
     <string name="welcome">Aktueller Login-Status</string>
 
     <string name="loggedout">Ausgeloggt</string>
-    <string name="loggedin">Eingeloggt \n %s</string>
+    <string name="loggedin">Eingeloggt: %s</string>
     <string name="loggederror">Login-Fehler \n %s</string>
     <string name="processing">Anmeldung läuft ...</string>
     <string name="pwresetting">PW zurücksetzen.\nPrüfen Sie Ihre E-Mails.</string>
@@ -17,14 +41,15 @@
     <string name="buttonLogin">Login</string>
     <string name="buttonRegister">Neuer Account</string>
 
-    <string name="emailHint">E-Mail Adresse</string>
-    <string name="pwHint">Passwort</string>
-    <string name="pwReset">Passwort vergessen?</string>
+
 
     <string name="forgotPw_title">Passwort zurücksetzen</string>
     <string name="forgotPw_msg">Geben Sie Ihre E-Mail Adresse an.</string>
 
+    <string name="setNickname_title">Nickname</string>
+    <string name="setNickname_msg">Geben Sie Ihren Nickname an.</string>
 
+    <string name="notLoggedIn">Bitte melden Sie sich zunächst an!</string>
 
     <string name="required">Bitte einen gültigen Eintrag vornehmen!</string>
 

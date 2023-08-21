@@ -5,31 +5,35 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class LoginViewModel : ViewModel() {
 
+    private val _user = MutableLiveData<FirebaseUser?>()
+    val user: LiveData<FirebaseUser?>
+        get() = _user
+
     private val _loginState by lazy { MutableLiveData<LoginState>(LoginState.LoggedOut) }
     val loginState: LiveData<LoginState>
         get() = _loginState
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var authStateListener: FirebaseAuth.AuthStateListener
+    private val auth = Firebase.auth
+    private val authStateListener = FirebaseAuth.AuthStateListener { auth ->
+        _user.value = auth.currentUser
+        val user = _user.value
+        if (user != null) {
+            _loginState.value = LoginState.LoggedIn
+            Log.i(">>>>vm", "onAuthStateChanged:signed_in:" + user.uid + user.email)
+        } else {
+            _loginState.value = LoginState.LoggedOut
+            Log.i(">>>>vm", "onAuthStateChanged:signed_out")
+        }
+    }
 
     init {
-        auth = Firebase.auth
-        // Create the AuthStateListener
-        authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-            val user = firebaseAuth.currentUser
-            if (user != null) {
-                _loginState.value = LoginState.LoggedIn
-                Log.i(">>>>", "onAuthStateChanged:signed_in:" + user.uid + user.email)
-            } else {
-                _loginState.value = LoginState.LoggedOut
-                Log.i(">>>>", "onAuthStateChanged:signed_out")
-            }
-        }
         auth.addAuthStateListener(authStateListener)
     }
 
@@ -43,7 +47,7 @@ class LoginViewModel : ViewModel() {
                     _loginState.value = LoginState.LoggedIn
                 } else {
                     task.exception?.let {
-                        Log.i(">>>>","Email signup failed with error: ${it.localizedMessage}")
+                        Log.i(">>>>vm","Email signup failed with error: ${it.localizedMessage}")
                         _loginState.value = LoginState.LoginError(it.localizedMessage)
                     }
                 }
@@ -59,7 +63,7 @@ class LoginViewModel : ViewModel() {
                     //_loginState.value = LoginState.LoggedIn
                 } else {
                     task.exception?.let {
-                        Log.i(">>>>","Login failed with error: ${it.localizedMessage}")
+                        Log.i(">>>>vm","Login failed with error: ${it.localizedMessage}")
                         _loginState.value = LoginState.LoginError(it.localizedMessage)
                     }
                 }
@@ -72,19 +76,36 @@ class LoginViewModel : ViewModel() {
 
 
     fun sendPwResetEmail(email: String) {
+        auth.signOut()
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     _loginState.value = LoginState.PwReset
-                    Log.i(">>>>", "Reset Email send")
+                    Log.i(">>>>vm", "Reset Email send")
                 } else {
                     _loginState.value = LoginState.LoginError(it.exception!!.message.toString())
-                    Log.i(">>>>", it.exception!!.message.toString())
+                    Log.i(">>>>vm", it.exception!!.message.toString())
                 }
             }
     }
 
-    fun getUser(): String {
-        return auth.currentUser?.email ?: ""
+    fun updateNickname(nickname: String) {
+        _user.value?.let {
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(nickname)
+                .build()
+            it.updateProfile(profileUpdates)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        _user.value = it
+                    } else {
+                        Log.i(">>>", "Error setting display name")
+                    }
+                }
+        }
+    }
+
+    fun getUser(): FirebaseUser? {
+        return _user.value
     }
 }
