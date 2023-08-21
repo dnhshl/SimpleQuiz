@@ -68,7 +68,7 @@ class SignInFragment : Fragment() {
         }
 
         binding.btnLogout.setOnClickListener {
-            authvm.logout()
+            authvm.signOut()
         }
 
         binding.btnResetPassword.setOnClickListener {

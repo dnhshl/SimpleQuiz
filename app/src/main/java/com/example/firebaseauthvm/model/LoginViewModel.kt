@@ -23,10 +23,9 @@ class LoginViewModel : ViewModel() {
     private val auth = Firebase.auth
     private val authStateListener = FirebaseAuth.AuthStateListener { auth ->
         _user.value = auth.currentUser
-        val user = _user.value
-        if (user != null) {
+        if (_user.value != null) {
             _loginState.value = LoginState.LoggedIn
-            Log.i(">>>>vm", "onAuthStateChanged:signed_in:" + user.uid + user.email)
+            Log.i(">>>>vm", "onAuthStateChanged:signed_in")
         } else {
             _loginState.value = LoginState.LoggedOut
             Log.i(">>>>vm", "onAuthStateChanged:signed_out")
@@ -70,7 +69,7 @@ class LoginViewModel : ViewModel() {
             }
     }
 
-    fun logout() {
+    fun signOut() {
         auth.signOut()
     }
 
