@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FirebaseAuthVM</string>
+    <string name="app_name">SimpleQuiz</string>
     <string name="action_nickname">Nickname setzen oder ändern</string>
 
     <!-- Strings used for fragments for navigation -->
