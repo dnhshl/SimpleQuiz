@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".QuizFragment">
+
+
+    <TextView
+        android:id="@+id/textViewMain"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginRight="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Is this statement true or false?"
+        android:textAlignment="center"
+        android:textSize="16pt"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonTrue"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="150dp"
+        android:text="@string/wahr"
+        android:textSize="12pt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/guideCenter"
+        app:layout_constraintRight_toLeftOf="@+id/buttonFalse" />
+
+    <Button
+        android:id="@+id/buttonFalse"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="150dp"
+        android:text="@string/falsch"
+        android:textSize="12pt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/buttonTrue"
+        app:layout_constraintRight_toRightOf="@+id/guideCenter" />
+
+    <TextView
+        android:id="@+id/textViewNumbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:text="12"
+        android:textAlignment="center"
+        android:textSize="30pt"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+
+    <!-- New Button "play" in the bottom right corner -->
+    <Button
+        android:id="@+id/buttonPlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="60dp"
+        android:text="@string/playButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- New TextView for the countdown timer in the top left corner -->
+    <TextView
+        android:id="@+id/textViewTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:text="10 s"
+        android:textSize="30pt"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!-- New TextView "Punkte" just below the textViewNumbers -->
+    <TextView
+        android:id="@+id/tvPunkte"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/punkte"
+        android:textAlignment="center"
+        android:textSize="6pt"
+        app:layout_constraintLeft_toLeftOf="@+id/textViewNumbers"
+        app:layout_constraintRight_toRightOf="@+id/textViewNumbers"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNumbers" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

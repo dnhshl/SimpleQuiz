@@ -1,8 +1,7 @@
-package com.example.firebaseauthvm
+package com.example.simplequiz
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -14,8 +13,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.activity.viewModels
-import com.example.firebaseauthvm.databinding.ActivityMainBinding
-import com.example.firebaseauthvm.model.LoginViewModel
+import com.example.simplequiz.databinding.ActivityMainBinding
+import com.example.simplequiz.model.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
@@ -61,6 +60,19 @@ class MainActivity : AppCompatActivity() {
                 }
                 true
             }
+            R.id.action_login -> {
+                navController.navigate(R.id.signInFragment)
+                true
+            }
+            R.id.action_highscore -> {
+                navController.navigate(R.id.highscoreFragment)
+                true
+            }
+            R.id.action_quiz -> {
+                navController.navigate(R.id.quizFragment)
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

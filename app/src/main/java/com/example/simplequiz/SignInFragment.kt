@@ -1,4 +1,4 @@
-package com.example.firebaseauthvm
+package com.example.simplequiz
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -9,14 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import com.example.firebaseauthvm.databinding.FragmentSigninBinding
-import com.example.firebaseauthvm.model.LoginState
-import com.example.firebaseauthvm.model.LoginViewModel
+import com.example.simplequiz.databinding.FragmentSigninBinding
+import com.example.simplequiz.model.LoginState
+import com.example.simplequiz.model.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.integrity.internal.l
 
 class SignInFragment : Fragment() {
 

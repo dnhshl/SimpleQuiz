@@ -1,9 +1,14 @@
 <resources>
     <string name="app_name">SimpleQuiz</string>
-    <string name="action_nickname">Nickname setzen oder ändern</string>
+    <string name="action_nickname">Nickname</string>
+    <string name="action_login">Login</string>
+    <string name="action_quiz">Home</string>
+    <string name="action_highscore">Highscores</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="signin_fragment_label">Anmeldung</string>
+    <string name="quiz_fragment_label">Happy Quizzing</string>
+    <string name="highscore_fragment_label">Highscores</string>
 
 
     <string name="status_text">Status</string>
@@ -28,8 +33,6 @@
     <string name="error">Ein unspezifizierter Fehler beim Login ist aufgetreten.</string>
 
 
-
-
     <string name="welcome">Aktueller Login-Status</string>
 
     <string name="loggedout">Ausgeloggt</string>
@@ -42,7 +45,6 @@
     <string name="buttonRegister">Neuer Account</string>
 
 
-
     <string name="forgotPw_title">Passwort zurücksetzen</string>
     <string name="forgotPw_msg">Geben Sie Ihre E-Mail Adresse an.</string>
 
@@ -52,6 +54,15 @@
     <string name="notLoggedIn">Bitte melden Sie sich zunächst an!</string>
 
     <string name="required">Bitte einen gültigen Eintrag vornehmen!</string>
+
+
+    <string name="wahr">wahr</string>
+    <string name="falsch">falsch</string>
+    <string name="playButton">play</string>
+    <string name="punkte">Punkte</string>
+
+    <string name="personalButton">Personal</string>
+    <string name="globalButton">Global</string>
 
 
 </resources>

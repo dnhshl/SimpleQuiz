@@ -1,4 +1,4 @@
-package com.example.firebaseauthvm
+package com.example.simplequiz
 
 import org.junit.Test
 

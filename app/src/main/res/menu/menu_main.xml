@@ -1,7 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.firebaseauthvm.MainActivity">
+    tools:context="com.example.simplequiz.MainActivity">
+    <item
+        android:id="@+id/action_quiz"
+        android:orderInCategory="100"
+        android:title="@string/action_quiz"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_highscore"
+        android:orderInCategory="100"
+        android:title="@string/action_highscore"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_login"
+        android:orderInCategory="100"
+        android:title="@string/action_login"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_nickname"
         android:orderInCategory="100"

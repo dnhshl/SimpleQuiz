@@ -1,4 +1,4 @@
-package com.example.firebaseauthvm.model
+package com.example.simplequiz.model
 
 sealed class LoginState {
     object LoggedOut : LoginState()
