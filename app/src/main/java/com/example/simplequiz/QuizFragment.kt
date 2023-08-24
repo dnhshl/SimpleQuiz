@@ -1,59 +1,206 @@
 package com.example.simplequiz
 
+import android.graphics.Color
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import com.example.simplequiz.databinding.FragmentQuizBinding
+import com.example.simplequiz.firestore.Quizdata
+import com.example.simplequiz.model.FirestoreViewModel
+import com.example.simplequiz.model.LoginViewModel
+import com.example.simplequiz.model.QuizViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [QuizFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class QuizFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentQuizBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
+    private val authvm: LoginViewModel by activityViewModels()
+    private val quizvm: QuizViewModel by activityViewModels()
+    private val dbvm: FirestoreViewModel by activityViewModels()
+
+    private lateinit var countDownTimer: CountDownTimer
+    private var isTimerRunning = false
+
+    private var quizdata: Quizdata? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_quiz, container, false)
+    ): View {
+        _binding = FragmentQuizBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment QuizFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            QuizFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // observe user to display login status
+        authvm.user.observe(viewLifecycleOwner) { user ->
+            Log.i(">>>", "Current User: $user")
+            if (user == null) {
+                binding.textViewMain.text = getString(R.string.loggedout)
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.LOGOUT)
+            } else {
+                binding.textViewMain.text = getString(R.string.loggedin).format(user.displayName)
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.LOGIN)
+            }
+        }
+
+        quizvm.currentState.observe(viewLifecycleOwner) { currentState ->
+            Log.i(">>>", "Current State: $currentState")
+            when (currentState) {
+                QuizStateMachine.QuizState.LOGGED_OUT -> {
+                    setUiLoggedOut()
+                    sideEffectLoggedOut()
+                }
+                QuizStateMachine.QuizState.IDLE -> {
+                    setUiIdle()
+                    sideEffectIdle()
+                }
+                QuizStateMachine.QuizState.STARTING -> {
+                    setUiStarting()
+                    sideEffectStarting()
+                }
+                QuizStateMachine.QuizState.PLAYING -> {
+                    setUiPlaying()
+                    sideEffectPlaying()
+                }
+                QuizStateMachine.QuizState.GAME_OVER -> {
+                    setUiGameOver()
+                    sideEffectGameOver()
                 }
             }
+        }
+
+        dbvm.quizdata.observe(viewLifecycleOwner) { quizdata ->
+            Log.i(">>>","quizdata ${quizdata.question} ${quizdata.answer}")
+            if (quizdata.answer.equals("questions_up")) {
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.QUESTIONS_UP)
+            } else {
+                binding.textViewMain.text = quizdata.question
+            }
+
+        }
+
+        binding.buttonPlay.setOnClickListener {
+            quizvm.doStateTransaction(QuizStateMachine.QuizEvent.START_GAME)
+        }
+
+        binding.buttonTrue.setOnClickListener {
+            quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
+        }
+        binding.buttonFalse.setOnClickListener {
+            quizvm.doStateTransaction(QuizStateMachine.QuizEvent.WRONG_ANSWER)
+        }
+    }
+
+    private fun setUiLoggedOut() {
+        binding.buttonPlay.isVisible = false
+        binding.textViewTimer.isVisible = false
+        binding.textViewNumbers.isVisible = false
+        binding.tvPunkte.isVisible = false
+        binding.buttonFalse.isVisible = false
+        binding.buttonTrue.isVisible = false
+    }
+
+    private fun setUiIdle() {
+        binding.buttonPlay.isVisible = true
+        binding.textViewTimer.isVisible = false
+        binding.textViewNumbers.isVisible = false
+        binding.tvPunkte.isVisible = false
+        binding.buttonFalse.isVisible = false
+        binding.buttonTrue.isVisible = false
+    }
+
+    private fun setUiStarting() {
+        binding.buttonPlay.isVisible = false
+        binding.textViewTimer.isVisible = true
+        binding.textViewNumbers.isVisible = true
+        binding.tvPunkte.isVisible = true
+        binding.buttonFalse.isVisible = true
+        binding.buttonTrue.isVisible = true
+    }
+
+    private fun setUiPlaying() {
+        binding.buttonPlay.isVisible = false
+        binding.textViewTimer.isVisible = true
+        binding.textViewNumbers.isVisible = true
+        binding.tvPunkte.isVisible = true
+        binding.buttonFalse.isVisible = true
+        binding.buttonTrue.isVisible = true
+    }
+    private fun setUiGameOver() {
+        binding.buttonPlay.isVisible = false
+        binding.textViewTimer.isVisible = true
+        binding.textViewNumbers.isVisible = true
+        binding.tvPunkte.isVisible = true
+        binding.buttonFalse.isVisible = true
+        binding.buttonTrue.isVisible = true
+    }
+
+    private fun sideEffectLoggedOut() {
+
+    }
+
+    private fun sideEffectIdle() {
+
+    }
+    private fun sideEffectStarting() {
+        startTimer()
+        dbvm.shuffleAndResetQuizdata()
+    }
+
+    private fun sideEffectPlaying() {
+        dbvm.nextQuestion()
+    }
+
+    private fun sideEffectGameOver() {
+        stopTimer()
+    }
+
+    // Helper Funktions
+
+    private fun startTimer() {
+        countDownTimer = object : CountDownTimer(20000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.textViewTimer.text = (millisUntilFinished / 1000).toString()
+            }
+            override fun onFinish() {
+                binding.textViewTimer.text = "0"
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.TIMER_UP)
+            }
+        }
+
+        quizvm.doStateTransaction(QuizStateMachine.QuizEvent.GAME_PREPARED)
+        countDownTimer.start()
+        isTimerRunning = true
+    }
+
+    private fun stopTimer() {
+        if (isTimerRunning) {
+            countDownTimer.cancel()
+            isTimerRunning = false
+        }
+    }
+
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        stopTimer()
+        _binding = null
     }
 }

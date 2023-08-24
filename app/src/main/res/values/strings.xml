@@ -35,8 +35,8 @@
 
     <string name="welcome">Aktueller Login-Status</string>
 
-    <string name="loggedout">Ausgeloggt</string>
-    <string name="loggedin">Eingeloggt: %s</string>
+    <string name="loggedout">Bitte anmelden!</string>
+    <string name="loggedin">Hallo %s</string>
     <string name="loggederror">Login-Fehler \n %s</string>
     <string name="processing">Anmeldung läuft ...</string>
     <string name="pwresetting">PW zurücksetzen.\nPrüfen Sie Ihre E-Mails.</string>
