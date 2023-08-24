@@ -16,7 +16,6 @@ import java.util.TimerTask
 class QuizViewModel : ViewModel() {
 
     // Zustandsautomat
-
     private val stateMachine = QuizStateMachine()
 
     private val _currentState = MutableLiveData<QuizStateMachine.QuizState>()
@@ -28,5 +27,16 @@ class QuizViewModel : ViewModel() {
             _currentState.value = stateMachine.currentState
     }
 
+    // Punkte
+    private val _points = MutableLiveData<Int>(-1)
+    val points: LiveData<Int>
+        get() = _points
 
+    fun countPoint() {
+        _points.value = _points.value!! + 1
+    }
+
+    fun resetPoints() {
+        _points.value = -1
+    }
 }

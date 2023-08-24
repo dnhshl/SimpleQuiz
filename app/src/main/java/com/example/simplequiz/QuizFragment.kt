@@ -94,6 +94,10 @@ class QuizFragment : Fragment() {
             }
         }
 
+        quizvm.points.observe(viewLifecycleOwner) { points ->
+            binding.textViewNumbers.text = points.toString()
+        }
+
         binding.buttonPlay.setOnClickListener {
             quizvm.doStateTransaction(QuizStateMachine.QuizEvent.START_GAME)
         }
@@ -102,14 +106,14 @@ class QuizFragment : Fragment() {
             if (correctAnswer.equals("wahr")) {
                 quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
             } else {
-                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.WRONG_ANSWER)
             }
         }
         binding.buttonFalse.setOnClickListener {
             if (correctAnswer.equals("falsch")) {
                 quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
             } else {
-                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.WRONG_ANSWER)
             }
         }
     }
@@ -173,10 +177,12 @@ class QuizFragment : Fragment() {
     private fun sideEffectStarting() {
         startTimer()
         dbvm.shuffleAndResetQuizdata()
+        quizvm.resetPoints()
     }
 
     private fun sideEffectPlaying() {
         dbvm.nextQuestion()
+        quizvm.countPoint()
     }
 
     private fun sideEffectGameOver() {
