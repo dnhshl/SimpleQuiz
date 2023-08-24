@@ -39,4 +39,8 @@ class QuizViewModel : ViewModel() {
     fun resetPoints() {
         _points.value = -1
     }
+
+    fun getPoints(): Int {
+        return _points.value!!
+    }
 }

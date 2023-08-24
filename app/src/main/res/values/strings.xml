@@ -64,5 +64,7 @@
     <string name="personalButton">Personal</string>
     <string name="globalButton">Global</string>
 
+    <string name="gameOverTitle">Game Over</string>
+    <string name="gameOverMessage">Sie haben %s Punkte erreicht!</string>
 
 </resources>

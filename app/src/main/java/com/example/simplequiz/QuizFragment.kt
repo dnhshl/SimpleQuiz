@@ -1,14 +1,17 @@
 package com.example.simplequiz
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.text.InputType
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -51,10 +54,8 @@ class QuizFragment : Fragment() {
         authvm.user.observe(viewLifecycleOwner) { user ->
             Log.i(">>>", "Current User: $user")
             if (user == null) {
-                binding.textViewMain.text = getString(R.string.loggedout)
                 quizvm.doStateTransaction(QuizStateMachine.QuizEvent.LOGOUT)
             } else {
-                binding.textViewMain.text = getString(R.string.loggedin).format(user.displayName)
                 quizvm.doStateTransaction(QuizStateMachine.QuizEvent.LOGIN)
             }
         }
@@ -168,11 +169,11 @@ class QuizFragment : Fragment() {
     }
 
     private fun sideEffectLoggedOut() {
-
+        binding.textViewMain.text = getString(R.string.loggedout)
     }
 
     private fun sideEffectIdle() {
-
+        binding.textViewMain.text = getString(R.string.loggedin).format(authvm.getUser()?.displayName)
     }
     private fun sideEffectStarting() {
         startTimer()
@@ -187,6 +188,7 @@ class QuizFragment : Fragment() {
 
     private fun sideEffectGameOver() {
         stopTimer()
+        gameOverDialog()
     }
 
     // Helper Funktions
@@ -212,6 +214,20 @@ class QuizFragment : Fragment() {
             countDownTimer.cancel()
             isTimerRunning = false
         }
+    }
+
+    // alert Dialog with the option to enter Email address
+    private fun gameOverDialog() {
+        val alertDialog = AlertDialog.Builder(context)
+            .setTitle(getString(R.string.gameOverTitle))
+            .setMessage(getString(R.string.gameOverMessage).format(quizvm.getPoints().toString()))
+            .setPositiveButton("OK") { dialog, _ ->
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.GAME_FINISHED)
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
     }
 
 
