@@ -1,28 +1,21 @@
 package com.example.simplequiz
 
 import android.app.AlertDialog
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.InputType
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import com.example.simplequiz.databinding.FragmentQuizBinding
-import com.example.simplequiz.firestore.Highscordata
-import com.example.simplequiz.firestore.Quizdata
+import com.example.simplequiz.firestore.Highscoredata
 import com.example.simplequiz.model.FirestoreViewModel
 import com.example.simplequiz.model.LoginViewModel
 import com.example.simplequiz.model.QuizViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+
 
 class QuizFragment : Fragment() {
 
@@ -61,31 +54,6 @@ class QuizFragment : Fragment() {
             }
         }
 
-        quizvm.currentState.observe(viewLifecycleOwner) { currentState ->
-            Log.i(">>>", "Current State: $currentState")
-            when (currentState) {
-                QuizStateMachine.QuizState.LOGGED_OUT -> {
-                    setUiLoggedOut()
-                    sideEffectLoggedOut()
-                }
-                QuizStateMachine.QuizState.IDLE -> {
-                    setUiIdle()
-                    sideEffectIdle()
-                }
-                QuizStateMachine.QuizState.STARTING -> {
-                    setUiStarting()
-                    sideEffectStarting()
-                }
-                QuizStateMachine.QuizState.PLAYING -> {
-                    setUiPlaying()
-                    sideEffectPlaying()
-                }
-                QuizStateMachine.QuizState.GAME_OVER -> {
-                    setUiGameOver()
-                    sideEffectGameOver()
-                }
-            }
-        }
 
         dbvm.quizdata.observe(viewLifecycleOwner) { quizdata ->
             correctAnswer = quizdata.answer
@@ -174,10 +142,9 @@ class QuizFragment : Fragment() {
     }
 
     private fun sideEffectIdle() {
-        authvm.getUser()?.let {
-            binding.textViewMain.text = getString(R.string.loggedin).format(it.displayName)
-            dbvm.setPersonalHighscoreCollectionRef(it.uid)
-        }
+        val user = authvm.getUser()
+        binding.textViewMain.text = getString(R.string.loggedin).format(user!!.displayName)
+        dbvm.setPersonalHighscoreCollectionRef(user!!.uid)
     }
 
     private fun sideEffectStarting() {
@@ -221,16 +188,18 @@ class QuizFragment : Fragment() {
         }
     }
 
-    // alert Dialog with the option to enter Email address
+
     private fun gameOverDialog() {
         val alertDialog = AlertDialog.Builder(context)
             .setTitle(getString(R.string.gameOverTitle))
             .setMessage(getString(R.string.gameOverMessage).format(quizvm.getPoints().toString()))
             .setPositiveButton(getString(R.string.saveHighscore)) { dialog, _ ->
-                dbvm.writeDataToFirestore(Highscordata(
-                    userName = authvm.getUser()?.displayName ?: "noname",
-                    userScore = quizvm.getPoints()
-                ))
+                dbvm.writeDataToFirestore(
+                    Highscoredata(
+                        userName = authvm.getUser()?.displayName ?: "noname",
+                        userScore = quizvm.getPoints()
+                    )
+                )
                 quizvm.doStateTransaction(QuizStateMachine.QuizEvent.GAME_FINISHED)
                 dialog.dismiss()
             }
@@ -243,6 +212,36 @@ class QuizFragment : Fragment() {
         alertDialog.show()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        quizvm.currentState.observe(viewLifecycleOwner) { currentState ->
+            Log.i(">>>", "setUI and do sideEffects for state $currentState")
+            when (currentState) {
+                QuizStateMachine.QuizState.LOGGED_OUT -> {
+                    setUiLoggedOut()
+                    sideEffectLoggedOut()
+                }
+                QuizStateMachine.QuizState.IDLE -> {
+                    setUiIdle()
+                    sideEffectIdle()
+                }
+                QuizStateMachine.QuizState.STARTING -> {
+                    setUiStarting()
+                    sideEffectStarting()
+                }
+                QuizStateMachine.QuizState.PLAYING -> {
+                    setUiPlaying()
+                    sideEffectPlaying()
+                }
+                QuizStateMachine.QuizState.GAME_OVER -> {
+                    setUiGameOver()
+                    sideEffectGameOver()
+                }
+            }
+        }
+
+    }
 
 
     override fun onDestroyView() {

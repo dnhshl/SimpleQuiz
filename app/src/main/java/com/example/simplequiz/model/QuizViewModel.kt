@@ -23,8 +23,11 @@ class QuizViewModel : ViewModel() {
         get() = _currentState
 
     fun doStateTransaction(event: QuizStateMachine.QuizEvent) {
-            stateMachine.stateTransaction(event)
-            _currentState.value = stateMachine.currentState
+        Log.i(">>>", "Event $event changes ${stateMachine.currentState} ...")
+        stateMachine.stateTransaction(event)
+        _currentState.value = stateMachine.currentState
+        Log.i(">>>", "... to ${stateMachine.currentState}")
+
     }
 
     // Punkte
