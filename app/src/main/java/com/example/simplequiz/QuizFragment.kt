@@ -34,7 +34,7 @@ class QuizFragment : Fragment() {
     private lateinit var countDownTimer: CountDownTimer
     private var isTimerRunning = false
 
-    private var quizdata: Quizdata? = null
+    private var correctAnswer = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,13 +86,12 @@ class QuizFragment : Fragment() {
         }
 
         dbvm.quizdata.observe(viewLifecycleOwner) { quizdata ->
-            Log.i(">>>","quizdata ${quizdata.question} ${quizdata.answer}")
+            correctAnswer = quizdata.answer
             if (quizdata.answer.equals("questions_up")) {
                 quizvm.doStateTransaction(QuizStateMachine.QuizEvent.QUESTIONS_UP)
             } else {
                 binding.textViewMain.text = quizdata.question
             }
-
         }
 
         binding.buttonPlay.setOnClickListener {
@@ -100,14 +99,23 @@ class QuizFragment : Fragment() {
         }
 
         binding.buttonTrue.setOnClickListener {
-            quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
+            if (correctAnswer.equals("wahr")) {
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
+            } else {
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
+            }
         }
         binding.buttonFalse.setOnClickListener {
-            quizvm.doStateTransaction(QuizStateMachine.QuizEvent.WRONG_ANSWER)
+            if (correctAnswer.equals("falsch")) {
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
+            } else {
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.CORRECT_ANSWER)
+            }
         }
     }
 
     private fun setUiLoggedOut() {
+        binding.textViewMain.isVisible = true
         binding.buttonPlay.isVisible = false
         binding.textViewTimer.isVisible = false
         binding.textViewNumbers.isVisible = false
@@ -117,6 +125,7 @@ class QuizFragment : Fragment() {
     }
 
     private fun setUiIdle() {
+        binding.textViewMain.isVisible = true
         binding.buttonPlay.isVisible = true
         binding.textViewTimer.isVisible = false
         binding.textViewNumbers.isVisible = false
@@ -126,6 +135,7 @@ class QuizFragment : Fragment() {
     }
 
     private fun setUiStarting() {
+        binding.textViewMain.isVisible = true
         binding.buttonPlay.isVisible = false
         binding.textViewTimer.isVisible = true
         binding.textViewNumbers.isVisible = true
@@ -135,6 +145,7 @@ class QuizFragment : Fragment() {
     }
 
     private fun setUiPlaying() {
+        binding.textViewMain.isVisible = true
         binding.buttonPlay.isVisible = false
         binding.textViewTimer.isVisible = true
         binding.textViewNumbers.isVisible = true
@@ -143,6 +154,7 @@ class QuizFragment : Fragment() {
         binding.buttonTrue.isVisible = true
     }
     private fun setUiGameOver() {
+        binding.textViewMain.isVisible = false
         binding.buttonPlay.isVisible = false
         binding.textViewTimer.isVisible = true
         binding.textViewNumbers.isVisible = true
