@@ -67,4 +67,7 @@
     <string name="gameOverTitle">Game Over</string>
     <string name="gameOverMessage">Sie haben %s Punkte erreicht!</string>
 
+    <string name="saveHighscore">save and exit</string>
+    <string name="dontSaveHighscore">exit</string>
+
 </resources>

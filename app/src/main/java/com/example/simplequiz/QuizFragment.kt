@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.simplequiz.databinding.FragmentQuizBinding
+import com.example.simplequiz.firestore.Highscordata
 import com.example.simplequiz.firestore.Quizdata
 import com.example.simplequiz.model.FirestoreViewModel
 import com.example.simplequiz.model.LoginViewModel
@@ -173,8 +174,12 @@ class QuizFragment : Fragment() {
     }
 
     private fun sideEffectIdle() {
-        binding.textViewMain.text = getString(R.string.loggedin).format(authvm.getUser()?.displayName)
+        authvm.getUser()?.let {
+            binding.textViewMain.text = getString(R.string.loggedin).format(it.displayName)
+            dbvm.setPersonalHighscoreCollectionRef(it.uid)
+        }
     }
+
     private fun sideEffectStarting() {
         startTimer()
         dbvm.shuffleAndResetQuizdata()
@@ -221,7 +226,15 @@ class QuizFragment : Fragment() {
         val alertDialog = AlertDialog.Builder(context)
             .setTitle(getString(R.string.gameOverTitle))
             .setMessage(getString(R.string.gameOverMessage).format(quizvm.getPoints().toString()))
-            .setPositiveButton("OK") { dialog, _ ->
+            .setPositiveButton(getString(R.string.saveHighscore)) { dialog, _ ->
+                dbvm.writeDataToFirestore(Highscordata(
+                    userName = authvm.getUser()?.displayName ?: "noname",
+                    userScore = quizvm.getPoints()
+                ))
+                quizvm.doStateTransaction(QuizStateMachine.QuizEvent.GAME_FINISHED)
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.dontSaveHighscore)) { dialog, _ ->
                 quizvm.doStateTransaction(QuizStateMachine.QuizEvent.GAME_FINISHED)
                 dialog.dismiss()
             }

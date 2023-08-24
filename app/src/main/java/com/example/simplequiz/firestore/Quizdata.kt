@@ -14,16 +14,15 @@ data class Quizdata (
 
 data class Highscordata (
     var userName: String = "",
-    var userScore: String = "",
+    var userScore: Int = 0,
     @ServerTimestamp
     var created_at: Timestamp? = null
 )  {
     override fun toString(): String {
-
         val datestring = "01.01.2000 00:00"
         created_at?.let {
             val datestring = convertTimestampToDateTimeString(it)
         }
-        return "$userScore, $userName at $datestring"
+        return "$userScore by $userName at $datestring"
     }
 }
